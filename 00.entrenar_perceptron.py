@@ -1,7 +1,12 @@
 # -- coding: utf-8 --
+"""
+Perceptron unicapa para compuerta AND y OR
 
-import sys
-from os import system, name
+Modelo de perceptrón para los siguientes casos:
+- Compuerta AND
+- Compuerta OR
+- Dataset de cáncer de mama
+"""
 
 import numpy as np
 import matplotlib.pyplot as plt
