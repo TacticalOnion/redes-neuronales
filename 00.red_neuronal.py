@@ -146,3 +146,71 @@ def perceptron(entradas, pesos, sesgo, funcion):
     
     return salida
 
+def calcular_error(funcion, valores_reales, predicciones):
+    """
+    Calcula el error entre los valores reales del dataset de entrenamiento y las predicciones del perceptron
+    Parameters
+    ---
+    funcion: array
+        Indica que con que funcion se debe calcular el error.
+        - mse: Error Cuadratico Medio. 
+        - mae: Error Absoluto Medio. 
+        - cross_entropy: Entropia Cruzada. 
+        - cross_entropy_muliclass: Entropia Cruzada Multiclase.
+        - hinge_loss: Hinge loss. 
+    valores_reales: array
+        Arreglo de valores reales del dataset de entrenamiento.
+    predicciones: array
+        Arreglo de predicciones generadas por el perceptron.
+    Returns
+    ---
+    Float
+        Error del perceptron
+    """
+    # Diferencia entre los valores reales y las predicciones
+    diferencia = np.subtract(valores_reales, predicciones)
+
+    # PROBLEMAS DE REGRESION
+    # Error Cuadratico Medio
+    if funcion == "mse":
+        # Elevar al cuadrado
+        diferencia_cuadrado = np.square(diferencia) 
+        # Calcular promedio
+        error = np.mean(diferencia_cuadrado)
+
+    # Error Absoluto Medio
+    elif funcion == "mae":
+        # Diferencia absoluta
+        diferencia_absoluta = np.abs(diferencia)
+        # Calcular promedio
+        error = np.mean(diferencia_absoluta)
+    
+    # PROBLEMAS DE CLASIFICACION
+    # Entropia cruzada
+    elif funcion == "cross_entropy":
+        # Clipping: en caso de que la probabilidad sea 0 o 1
+        epsilon = 1e-15
+        predicciones = np.clip(predicciones, epsilon, 1 - epsilon)
+        # Cantidad de muestras
+        cantidad_muestras = len(valores_reales)
+        # Calculo de entropia cruzada binaria
+        error = -np.sum(valores_reales * np.log(predicciones) + (1 - valores_reales) * np.log(1 - predicciones)) / cantidad_muestras
+
+    elif funcion == "cross_entropy_muliclass":
+        # Clipping: en caso de que la probabilidad sea 0 o 1
+        epsilon = 1e-15
+        predicciones = np.clip(predicciones, epsilon, 1 - epsilon)
+
+        # Calculo de entropia cruzada multiclase
+        error = -np.sum(valores_reales * np.log(predicciones)) / valores_reales.shape[0]
+    
+    elif funcion == "hinge_loss":
+        # Calcular valor maximo
+        clasificacion = np.maximum(0, 1 - valores_reales * predicciones)
+        # Calcular promedio
+        error = np.mean(clasificacion)
+
+    else:
+        raise ValueError(f"Función no válida: {funcion}")
+
+    return error
