@@ -57,9 +57,9 @@ def inicializar_sesgo(cantidad_salidas):
         Sesgo inicializado con un vector de ceros
     """
     # Genera vector de ceros
-    sesgo = np.zeros(cantidad_salidas)
+    sesgos = np.zeros(cantidad_salidas)
 
-    return sesgo
+    return sesgos
 
 def funcion_activacion(salida_neurona, funcion, pendiente = 0.01):
     """
