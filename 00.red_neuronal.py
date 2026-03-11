@@ -3,7 +3,7 @@ Perceptron multicapa
 """
 import numpy as np
 
-def inicializar_pesos(metodo, cantidad_entradas, cantidad_salidas):
+def inicializar_pesos(metodo, cantidad_entradas):
     """
     Inicializa una matriz de pesos
     
@@ -15,29 +15,27 @@ def inicializar_pesos(metodo, cantidad_entradas, cantidad_salidas):
         - normal_xavier: para funciones de activación sigmoid y tanh
         - kaiming: para funciones de activación ReLU, Leaky ReLU y ELU
     cantidad_entradas: integer
-        Cantidad de neuronas de la capa de entrada.
-    cantidad_salidad: integer
-        Cantidad de neuronas para la capa de salida.
+        Cantidad de entradas que recibe la reurona.
     
     Returns
     ---
     numpy.ndarray
-        Matriz de pesos
+        Vector de pesos
     """
     # Uniform Xavier Initialization
     if(metodo == "uniform_xavier"):
-        limite = np.sqrt(6/(cantidad_entradas + cantidad_salidas))
-        pesos = np.random.uniform(-limite, limite, (cantidad_entradas,cantidad_salidas))
+        limite = np.sqrt(6/(cantidad_entradas))
+        pesos = np.random.uniform(-limite, limite, (cantidad_entradas))
 
     # Normal Xavier Initialization
     elif(metodo == "normal_xavier"):
-        desviacion_estandar = np.sqrt(2/(cantidad_entradas + cantidad_salidas))
-        pesos = np.random.normal(0, desviacion_estandar, (cantidad_entradas, cantidad_salidas))
+        desviacion_estandar = np.sqrt(2/(cantidad_entradas))
+        pesos = np.random.normal(0, desviacion_estandar, (cantidad_entradas))
     
     # Kaiming Initialization
     elif(metodo == "kaiming"):
         desviacion_estandar = np.sqrt(2/(cantidad_entradas))
-        pesos = np.random.normal(0, desviacion_estandar, (cantidad_entradas,cantidad_salidas))
+        pesos = np.random.normal(0, desviacion_estandar, (cantidad_entradas))
     
     else:
         raise ValueError(f"Método no válido: {metodo}")
