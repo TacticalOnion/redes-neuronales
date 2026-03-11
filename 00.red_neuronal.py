@@ -42,25 +42,6 @@ def inicializar_pesos(metodo, cantidad_entradas):
 
     return pesos
 
-def inicializar_sesgo(cantidad_salidas):
-    """
-    inicializar_sesgo
-
-    Parameters
-    ---
-    cantidad_salidas: integer
-        Cantidad de salidas de la red. Para definir la longitud del vector
-    
-    Returns
-    ---
-    numpy.ndarray
-        Sesgo inicializado con un vector de ceros
-    """
-    # Genera vector de ceros
-    sesgos = np.zeros(cantidad_salidas)
-
-    return sesgos
-
 def funcion_activacion(salida_neurona, funcion, pendiente = 0.01):
     """
     Applica funcion de activacion a la salida de una neurona (suma ponderada).
