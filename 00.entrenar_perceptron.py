@@ -8,166 +8,280 @@ Modelo de perceptrón para los siguientes casos:
 - Dataset de cáncer de mama
 """
 
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Uso de perceptrón entrenado para la compuerta AND (pesos adecuados)
-# Y o CONJUNCION
-x_entradas=[[1,1,1], [1,0,1], [0,1,1], [0,0,1]]
-#x_entradas=[[1,1,0], [1,0,1], [0,1,1], [0,0,0]]
-# Pesos adecuados
-# perceptron unicapa: 
-# Pesos ideales
-# pesosP = [1,1,-1.5]
-# Pesos iniciales
-pesosP = [-1,-1,-1]
-# clases para la CONJUNCIÓN
-w_clases = [1,0,0,0]
-umbral = 0.5
-# Función sigmoide S(t) = ___1__
-#                         1 + e^-t
+
+# =========================
+# Activación y predicción
+# =========================
+
 def sigmoide(t):
-    return (1 / (1 + pow(2.718281828,-t)))
+    return 1.0 / (1.0 + np.exp(-t))
 
-# Función escalón E | si( y > umbral) = 1
-#                   | 0
-def escalon(suma_ponderada):
-    if suma_ponderada > umbral:
-        return 1
-    else:
-        return 0
+def escalon(prob, umbral=0.5):
+    return 1 if prob >= umbral else 0
 
-# Perceptón unicapa
-def perceptron(ejemplar):
-    suma_ponderada = 0;
-    print("DATOS:")
-    print(ejemplar)
-    for x,w in zip(ejemplar,pesosP):
-        suma_ponderada += x*w
-    sig = sigmoide(suma_ponderada)
-    esc = escalon(sig)
-    escalon(sigmoide(suma_ponderada))
-    print("SUMA PONDERADA "+str(suma_ponderada))
-    print("SIGMOIDE ="+str(sig))
-    print("ESCALON ="+str(esc))
-    return esc
+def forward(x, w):
+    net = np.dot(x, w)
+    return sigmoide(net)
 
-# Perceptrón unicapa parametrizado
-def perceptronP(ejemplar,pesos):
-    suma_ponderada = 0;
-    for x,w in zip(ejemplar,pesos):
-        suma_ponderada += x*w
-    sig = sigmoide(suma_ponderada)
-    esc = escalon(sig)
-    return esc
-
-# Perceptrón unicapa parametrizado
-def perceptronE(ejemplar,pesos):
-    suma_ponderada = 0;
-    for x,w in zip(ejemplar,pesos):
-        suma_ponderada += x*w
-    sig = sigmoide(suma_ponderada)
-    esc = escalon(sig)
-    return sig,esc
+def predict(x, w, umbral=0.5):
+    return escalon(forward(x, w), umbral)
 
 
-# Obtiene los nuevos pesos a partir de la neurona actual
-# p: peso del enlace actual
-# x: dato de entrada
-# y: valor calculado (observado) 
-def actualizaP(p,x,y):
-    p1 = p + x * y
-    print("p1 = p + x * y",p1,p,"+",x,"*",y)
-    return p1
+# =========================
+# Datasets AND / OR
+# =========================
 
-def entrenar(ejemplares,pesos,clases,limite):
-    print("-----------------------------------")
-    print(" Entrenando")
-    print(" Pesos ",pesos)
-    print(" Clases",clases)
-    # número de ajustes por mala clasificación
-    a = 0;
-    ajustes = []
-    for i in range(limite):
-        for e,c in zip(ejemplares,clases):
-            y,ye = perceptronE(e,pesos)
-            # Discrepancia entre valor observado y valor esperado (clase)
-            if ye != c:
-                a = a + 1
-                ajustes.append(a)
-                print("Eureka")
-                print(e," -> ",ye," vs ",c)
-                if c == 0:
-                    y = y * -1
-                pesos = [actualizaP(p,d,y) for p,d in zip(pesos,e)]
-                print(" Nuevos Pesos ",pesos)
-            else:
-                ajustes.append(a)
+def dataset_and():
+    X = np.array([
+        [1, 1, 1],
+        [1, 0, 1],
+        [0, 1, 1],
+        [0, 0, 1],
+    ], dtype=float)
+    d = np.array([1, 0, 0, 0], dtype=float)
+    return X, d
 
-    print("Fin")
-    print(" Pesos ",pesos)
-    print(" # Errores de clasificación",a)
-    print("-----------------------------------")
-    return pesos,ajustes
+def dataset_or():
+    X = np.array([
+        [1, 1, 1],
+        [1, 0, 1],
+        [0, 1, 1],
+        [0, 0, 1],
+    ], dtype=float)
+    d = np.array([1, 1, 1, 0], dtype=float)
+    return X, d
 
-# Grafica un vector de datos dado
-def graficaPesos(datos1,datos2,ajustes):
-    plt.subplot(1,2,1)
-    plt.title("Pesos iniciales vs finales") 
-    # etiqueta abcisas
-    plt.xlabel("X") 
-    # etiqueta ordenadas 
-    plt.ylabel("Y") 
-    plt.plot(datos1,color="green",label="P Iniciales") 
-    plt.plot(datos2,color="orange",label="P Finales") 
+
+# =========================
+# Carga de CSV (N entradas + 1 clase)
+# =========================
+
+def cargar_dataset_csv_binario(filepath, n_entradas=None, delimiter=","):
+    """
+    Lee un CSV con encabezado, ignora el encabezado y asume:
+      - n_entradas columnas de entrada
+      - 1 columna de clase al final (0/1)
+    Si n_entradas es None, se infiere como (#columnas - 1).
+
+    Agrega bias automáticamente.
+    """
+    if not os.path.exists(filepath):
+        raise FileNotFoundError(f"No existe el archivo: {filepath}")
+
+    data = np.genfromtxt(filepath, delimiter=delimiter, skip_header=1)
+
+    if data.ndim == 1:
+        data = data.reshape(1, -1)
+
+    n_cols = data.shape[1]
+    if n_cols < 2:
+        raise ValueError("El CSV debe tener al menos 2 columnas (entradas + clase).")
+
+    if n_entradas is None:
+        n_entradas = n_cols - 1
+
+    if n_cols != n_entradas + 1:
+        raise ValueError(
+            f"Columnas inválidas. Esperaba {n_entradas + 1} columnas "
+            f"({n_entradas} entradas + 1 clase), pero encontré {n_cols}."
+        )
+
+    Xn = data[:, 0:n_entradas].astype(float)
+    d = data[:, n_entradas].astype(float)  # última columna = clase
+
+    # Bias
+    bias = np.ones((Xn.shape[0], 1), dtype=float)
+    X = np.hstack([Xn, bias])
+
+    return X, d
+
+
+# =========================
+# Entrenamiento (Regla Delta)
+# =========================
+
+def entrenar_delta(X, d, w_init, epocas=50, eta=0.1, umbral=0.5, verbose=False):
+    """
+    Regla Delta:
+      y = sigmoide(net)
+      e = d - y
+      w <- w + eta * e * x
+
+    Costo (MSE/2): (1/N) * sum( 0.5*(d - y)^2 )
+    """
+    w = w_init.astype(float).copy()
+    N = X.shape[0]
+
+    historial_costo = []
+    historial_acc = []
+
+    for ep in range(epocas):
+        costo_ep = 0.0
+        aciertos = 0
+
+        for i in range(N):
+            x = X[i]
+            yi = forward(x, w)
+            e = d[i] - yi
+
+            w = w + eta * e * x
+
+            costo_ep += 0.5 * (e ** 2)
+            if (1 if yi >= umbral else 0) == int(d[i]):
+                aciertos += 1
+
+        costo_ep /= N
+        acc_ep = (aciertos / N) * 100.0
+
+        historial_costo.append(costo_ep)
+        historial_acc.append(acc_ep)
+
+        if verbose:
+            print(f"Época {ep+1:03d} | Costo={costo_ep:.6f} | Acc={acc_ep:.2f}% | w={w}")
+
+    return w, historial_costo, historial_acc
+
+
+# =========================
+# Gráficas
+# =========================
+
+def graficar_metricas(hist_acc, hist_costo):
+    epocas = np.arange(1, len(hist_acc) + 1)
+
+    plt.figure(figsize=(12, 5))
+
+    # Gráfico 1: Accuracy
+    plt.subplot(1, 2, 1)
+    plt.title("% Precisión de clasificación por época")
+    plt.xlabel("Época")
+    plt.ylabel("Accuracy (%)")
+    plt.plot(epocas, hist_acc, label="Accuracy")
     plt.legend()
-    plt.subplot(1,2,2)
-    plt.title("Ajuste de pesos") 
-    plt.xlabel("# pruebas") 
-    plt.ylabel("# ajustes x error al clasificar") 
-    plt.plot(ajustes,color="blue",label="Ajustes") 
+
+    # Gráfico 2: Costo
+    plt.subplot(1, 2, 2)
+    plt.title("Descenso del gradiente (Costo) por época")
+    plt.xlabel("Época")
+    plt.ylabel("Costo (MSE/2)")
+    plt.plot(epocas, hist_costo, label="Costo")
     plt.legend()
+
+    plt.tight_layout()
     plt.show()
 
 
-def main():
-    # parámetros: (ejemplares,pesos,clases,limite)
-    print("======================================")
-    print("== ENTRENANDO PERCEPTRÓN =============")
-    print("== Función buscada: Conjunción (Y) ===")
-    print("== Pesos iniciales predeterminados ===")
-    print("==", pesosP,"===")
-    opc = int(input('Dame los pesos iniciales o acepta los predeterminados: [1 (Dar pesos), 2 Predeterminados]>>'))
+# =========================
+# Menú principal
+# =========================
+
+def menu_dataset():
+    print("\n======================================")
+    print("== SELECCIÓN DE DATASET ==============")
+    print("1) Dataset función AND")
+    print("2) Dataset función OR")
+    print("3) Cargar archivo desde /data")
+    opc = int(input("Selecciona opción [1-3] >> "))
+
     if opc == 1:
-        pesosP[0]  = int(input('Dar peso 1:]>>'))
-        pesosP[1]  = int(input('Dar peso 2:]>>'))
-        pesosP[2]  = int(input('Dar peso 3:]>>'))
-    elif opc != 2:
-        print("Opción no reconocida, adiós")
-        exit(0)
-    limite = 25
-    opc = int(input('Dame el no. de iteraciones o acepta las predeterminadas [1 (Dar # de iteraciones), 2 Predeterminadas:25 ]>>'))
-    if opc == 1:
-        limite = int(input('Dar # de iteraciones ]>>'))
-    elif opc != 2:
-        print("Opción no reconocida, adiós")
+        return dataset_and(), "AND"
+    elif opc == 2:
+        return dataset_or(), "OR"
+    elif opc == 3:
+        print("\n--- CARGA DE ARCHIVO (/data) ---")
+        print('1) "cancerMamaDiscretizado.csv"')
+        print("2) Especificar nombre de archivo")
+        sub = input("Selecciona [1 / 2] >> ").strip()
+
+        data_dir = "data"
+
+        if sub == "1":
+            f1 = os.path.join(data_dir, "cancerMamaDiscretizado.csv")
+            filepath = f1
+
+            # INFIERE n_entradas = (#cols - 1)
+            X, d = cargar_dataset_csv_binario(filepath, n_entradas=None)
+            return (X, d), os.path.basename(filepath)
+
+        elif sub == "2":
+            nombre = input("Nombre del archivo (ej: miDataset.csv) >> ").strip()
+            n_entradas = int(input("Cantidad de entradas (features) >> "))
+
+            filepath = os.path.join(data_dir, nombre)
+            X, d = cargar_dataset_csv_binario(filepath, n_entradas=n_entradas)
+            return (X, d), nombre
+
+        else:
+            print("Opción no reconocida. Saliendo.")
+            exit(0)
+    else:
+        print("Opción no reconocida. Saliendo.")
         exit(0)
 
-    print("=====================================")
-    print("== USANDO PERCEPTRÓN ENTRENADO ======")
-    pesosE,ajustes = entrenar(x_entradas,pesosP,w_clases,limite)
-    for e in x_entradas:
-        print("============================")
-        print("CÁLCULOS");
-        print("-----------------------------------")
-        salida = perceptronP(e,pesosE)
-        print("-----------------------------------")
-        print("RESULTADO");
-        print("\tDATOS \t SALIDA")
-        print("\t"+str(e[0])+" Y "+str(e[1])+" = "+str(salida))
-    graficaPesos(pesosP,pesosE,ajustes)
+
+def main():
+    (X, d), nombre_ds = menu_dataset()
+
+    print("\n======================================")
+    print("== ENTRENANDO PERCEPTRÓN (DELTA) =====")
+    print(f"== Dataset: {nombre_ds}")
+    print("======================================")
+
+    # Pesos iniciales: (#entradas + bias)
+    n_pesos = X.shape[1]
+    w = -1.0 * np.ones(n_pesos, dtype=float)
+
+    opc = int(input(f"Pesos iniciales: [1) Dar pesos, 2) Predeterminados ({w.tolist()})] >> "))
+    if opc == 1:
+        for i in range(n_pesos):
+            w[i] = float(input(f"Dar peso {i+1} >> "))
+    elif opc != 2:
+        print("Opción no reconocida. Saliendo.")
+        exit(0)
+
+    epocas = 50
+    opc = int(input("Épocas: [1) Dar #, 2) Predeterminadas (50)] >> "))
+    if opc == 1:
+        epocas = int(input("Dar # de épocas >> "))
+    elif opc != 2:
+        print("Opción no reconocida. Saliendo.")
+        exit(0)
+
+    eta = 0.1
+    opc = int(input("Tasa de aprendizaje (eta): [1) Dar eta, 2) Predeterminada (0.1)] >> "))
+    if opc == 1:
+        eta = float(input("Dar eta >> "))
+    elif opc != 2:
+        print("Opción no reconocida. Saliendo.")
+        exit(0)
+
+    umbral = 0.5
+
+    print("\n--- Entrenando ---")
+    w_final, hist_costo, hist_acc = entrenar_delta(
+        X=X, d=d, w_init=w, epocas=epocas, eta=eta, umbral=umbral, verbose=False
+    )
+
+    print("\n--- Resultados finales ---")
+    print("Pesos iniciales:", w)
+    print("Pesos finales  :", w_final)
+
+    # Mostrar algunas predicciones (primeras 10 si es grande)
+    print("\n(Mostrando hasta 10 ejemplos)")
+    print("\tEntradas... \t-> y_pred \t(d)")
+    max_show = min(10, X.shape[0])
+    for i in range(max_show):
+        y_pred = predict(X[i], w_final, umbral=umbral)
+        # imprimir todas las entradas excepto bias
+        entradas = [int(v) for v in X[i][:-1]]
+        print(f"\t{entradas}\t-> {y_pred}\t\t({int(d[i])})")
+
+    graficar_metricas(hist_acc, hist_costo)
 
 
 if __name__ == "__main__":
     main()
-
