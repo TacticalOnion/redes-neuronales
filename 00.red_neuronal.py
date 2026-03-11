@@ -119,3 +119,9 @@ def funcion_activacion(salida_neurona, funcion, pendiente = 0.01):
         raise ValueError(f"Función de activación no válida: {funcion}")
 
     return activacion
+
+def perceptron(entradas, pesos, sesgo, funcion):
+    suma_ponderada = np.dot(entradas, pesos) + sesgo
+    salida = funcion_activacion(suma_ponderada,funcion)
+    
+    return salida
