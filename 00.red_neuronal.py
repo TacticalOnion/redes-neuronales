@@ -121,6 +121,26 @@ def funcion_activacion(salida_neurona, funcion, pendiente = 0.01):
     return activacion
 
 def perceptron(entradas, pesos, sesgo, funcion):
+    """
+    Calcula la salida del perceptron
+
+    Paramters
+    ---
+    entradas: array
+        Valores de entrada del perceptron
+    pesos: array
+        Pesos a aplicar
+    sesgo: float
+        Sesgo a aplicar
+    funcion: string {linear, sigmoid, tanh, relu, leaky_relu, softplus, elu, selu}
+        Nombre de la funcion de activacion
+    
+    Returns
+    ---
+    float
+        Salida del perceptron
+
+    """
     suma_ponderada = np.dot(entradas, pesos) + sesgo
     salida = funcion_activacion(suma_ponderada,funcion)
     
