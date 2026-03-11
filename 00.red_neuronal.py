@@ -59,3 +59,81 @@ def inicializar_sesgo(cantidad_salidas):
     sesgo = np.zeros(cantidad_salidas)
 
     return sesgo
+
+def funcion_activacion(salida_neurona, funcion, pendiente = 0.01):
+    """
+    Applica funcion de activacion a la salida de una neurona (suma ponderada).
+
+    Parameters
+    ---
+    salida_neurona: float 
+        Suma ponderada de la neurona
+    funcion: string
+        Indica que función de activación se va a utilizar.
+        - linear: Función lineal (-∞ , ∞) [Capa de salida]. Aplicable a problemas de regresión.
+        - sigmoid: Sigmoide (0,1) [Capa de salida]. Aplicable a clasificación binaria.
+        - tanh: Tangente hiperbolica (-1, 1) [Capas ocultas]. Aplicable a redes neuronales recurrentes. 
+        - relu: Rectified Linear Unit (0,∞) [Capa oculta]. Aplicable a CNN y MLP.
+        - leaky_relu: Leaky ReLU (-∞ , ∞) [Capa oculta]. Aplicable a CNN y MLP cuando hay dying ReLU.
+        - softplus: Softplus (0,∞) [Capa oculta]. Aplicable cuando se necesita ReLU suave.
+        - elu: Exponential Linear Unit (-a , ∞) [...]. Aplicable a redes profundas.
+        - selu: Scaled ELU (-∞ , ∞) [...]. Aplicable a redes neuronales auto normalizadas.
+    pendiente: float default 0.01
+        Pendiente para la funcion de activacion Leaky ReLU
+    
+    Returns
+    ---
+    number
+        Salida de la función de activación aplicada a la salida de la neurona
+    """
+    # Lineal
+    if funcion == "linear":
+        activacion = salida_neurona
+    
+    # Sigmoide
+    elif funcion == "sigmoid":
+        activacion = 1 / (1 + np.exp(-salida_neurona))
+
+    # Tangente hiperbolica
+    elif funcion == "tanh":
+        activacion = 2 / (1 + np.exp(-2 * salida_neurona)) - 1
+
+    # Rectified Linear Unit
+    elif funcion == "relu":
+        if salida_neurona > 0:
+            activacion = salida_neurona
+        else:
+            activacion = 0
+    
+    # Leaky Rectified Linear Unit
+    elif funcion == "leaky_relu":
+        if salida_neurona > 0:
+            activacion = salida_neurona
+        else:
+            activacion = pendiente * salida_neurona
+
+    # Softplus
+    elif funcion == "softplus":
+        activacion = np.log1p(np.exp(salida_neurona))
+    
+    # Exponential Linear Unit
+    elif funcion == "elu":
+        if salida_neurona > 0:
+            activacion = salida_neurona
+        else:
+            activacion = pendiente * (np.exp(salida_neurona) - 1)
+
+    # Scaled Exponential Linear Unit
+    elif funcion == "selu":
+        constante = 1.0507 # lambda
+        pendiente = 1.67326 # alpha
+        
+        if salida_neurona > 0:
+            activacion = constante * salida_neurona
+        else:
+            activacion = constante * pendiente * (np.exp(salida_neurona) - 1)
+
+    else:
+        raise ValueError(f"Función de activación no válida: {funcion}")
+
+    return activacion
