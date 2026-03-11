@@ -5,7 +5,7 @@ import numpy as np
 
 def inicializar_pesos(metodo, cantidad_entradas):
     """
-    Inicializa una matriz de pesos
+    Inicializa el vector de pesos
     
     Parameters
     ---
@@ -125,3 +125,4 @@ def perceptron(entradas, pesos, sesgo, funcion):
     salida = funcion_activacion(suma_ponderada,funcion)
     
     return salida
+
