@@ -30,15 +30,18 @@ def inicializar_pesos(metodo, cantidad_entradas, cantidad_salidas):
         pesos = np.random.uniform(-limite, limite, (cantidad_entradas,cantidad_salidas))
 
     # Normal Xavier Initialization
-    if(metodo == "normal_xavier"):
+    elif(metodo == "normal_xavier"):
         desviacion_estandar = np.sqrt(2/(cantidad_entradas + cantidad_salidas))
         pesos = np.random.normal(0, desviacion_estandar, (cantidad_entradas, cantidad_salidas))
     
     # Kaiming Initialization
-    if(metodo == "kaiming"):
+    elif(metodo == "kaiming"):
         desviacion_estandar = np.sqrt(2/(cantidad_entradas))
         pesos = np.random.normal(0, desviacion_estandar, (cantidad_entradas,cantidad_salidas))
     
+    else:
+        raise ValueError(f"Método no válido: {metodo}")
+
     return pesos
 
 def inicializar_sesgo(cantidad_salidas):
