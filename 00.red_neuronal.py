@@ -1,8 +1,9 @@
 """
-Perceptron multicapa
+Deprecado: Estoy mezclando conceptos de perceptorn y perceptron multicapa
 """
 import numpy as np
 
+# TODO modificar inicializar pesos para que funcione con perceptron y perceptron multicapa
 def inicializar_pesos(metodo, cantidad_entradas):
     """
     Inicializa el vector de pesos
@@ -141,27 +142,77 @@ def calcular_error(funcion, valores_reales, predicciones):
     # Validar dimensiones de valores resales y predicciones
     if valores_reales.shape != predicciones.shape:
         raise ValueError("valores_reales y predicciones deben tener las mismas dimensiones")
-
+    
+    # Diferencia entre los valores reales y las predicciones
+    diferencia = np.subtract(valores_reales, predicciones)
+    
+    # Delta
+    if funcion == "delta":
+        error = diferencia
+    
     # PROBLEMAS DE REGRESION
     # Error Cuadratico Medio
-    if funcion == "mse":
-        # Diferencia entre los valores reales y las predicciones
-        diferencia = np.subtract(valores_reales, predicciones)
+    elif funcion == "mse":
         # Elevar al cuadrado
         diferencia_cuadrado = np.square(diferencia) 
         # Calcular promedio
-        error = np.mean(diferencia_cuadrado)
-
+        error = np.multiply(0.5,diferencia_cuadrado)
+    
     # Error Absoluto Medio
     elif funcion == "mae":
-        # Diferencia entre los valores reales y las predicciones
-        diferencia = np.subtract(valores_reales, predicciones)
         # Diferencia absoluta
         diferencia_absoluta = np.abs(diferencia)
         # Calcular promedio
-        error = np.mean(diferencia_absoluta)
-
+        error = np.multiply(0.5,diferencia_absoluta)
+    
     else:
         raise ValueError(f"Función no válida: {funcion}")
 
     return error
+
+def derivada_activacion(funcion, salida_neurona):
+    if funcion == "sigmoid":
+        derivada = salida_neurona * (1 - salida_neurona)
+
+    elif funcion == "tanh":
+        derivada = 1 - np.tanh(salida_neurona)**2
+
+    elif funcion == "relu":
+        if salida_neurona > 0:
+            derivada = 1
+        else: 
+            derivada = 0
+
+    return derivada
+
+def derivada_error(funcion, valores_reales, predicciones):
+    if funcion == "mse":
+        derivada = np.subtract(predicciones,valores_reales)
+
+    # TODO declarar la derivada de mae
+    # elif funcion == "mae":
+    #    derivada = 
+    
+    return derivada
+
+def actualizar_pesos(metodo, funcion_activacion, pesos, tasa_aprendizaje, predicciones, valores_reales, entradas):
+    
+    # Simple
+    if metodo == "simple":
+        error = calcular_error("delta",valores_reales,predicciones)
+        aprendizaje = tasa_aprendizaje * error * entradas
+        pesos = np.add(pesos,aprendizaje)
+    
+    # Gradiente
+    if metodo == "gradiente":
+        # Regla de la cadena
+        d_error = derivada_error("mse", valores_reales, predicciones)
+        d_activacion = [derivada_activacion(funcion_activacion,prediccion) for prediccion in predicciones]
+        d_perceptron = entradas
+        gradiente = d_error * d_activacion * d_perceptron
+        aprendizaje = np.multiply(tasa_aprendizaje,gradiente)
+        pesos = np.subtract(pesos,aprendizaje)
+
+    return pesos
+
+# Corregir gradiente https://chatgpt.com/share/69b21bdb-e880-8010-92cb-fac8d785322d
