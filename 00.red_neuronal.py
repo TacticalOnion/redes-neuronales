@@ -53,6 +53,7 @@ def funcion_activacion(salida_neurona, funcion):
     funcion: string
         Indica que función de activación se va a utilizar.
         - linear: Función lineal (-∞ , ∞) [Capa de salida]. Aplicable a problemas de regresión.
+        - escalera: Step function (0,1) [Capa de salida]. Aplicable a ...
         - sigmoid: Sigmoide (0,1) [Capa de salida]. Aplicable a clasificación binaria.
         - tanh: Tangente hiperbolica (-1, 1) [Capas ocultas]. Aplicable a redes neuronales recurrentes. 
         - relu: Rectified Linear Unit (0,∞) [Capa oculta]. Aplicable a CNN y MLP.
