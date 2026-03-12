@@ -126,6 +126,7 @@ def calcular_error(funcion, valores_reales, predicciones):
     ---
     funcion: string
         Indica con que funcion se debe calcular el error.
+        - delta: devuelve unicamente la diferencia.
         - mse: Error Cuadratico Medio. 
         - mae: Error Absoluto Medio.
     valores_reales: array
