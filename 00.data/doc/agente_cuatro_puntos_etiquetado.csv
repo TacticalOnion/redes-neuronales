@@ -1,0 +1,19 @@
+sensor_obstaculo,posicion_obstaculo,sensor_premio,posicion_premio,giro,direccion,accion
+0,0,0,0,0,1,Avanzar
+0,0,0.5,-1,-1,1,Girar izquierda buscar premio
+0,0,0.5,1,1,1,Girar derecha buscar premio
+0,0,1,0,0,1,Avanzar tomar premio
+0,0,1,-1,-1,1,Girar izquierda premio cercano
+0,0,1,1,1,1,Girar derecha premio cercano
+0.5,1,0,0,-1,1,Evitar obstaculo izquierda
+0.5,-1,0,0,1,1,Evitar obstaculo derecha
+0.5,0,0,0,0,1,Avanzar con precaucion
+0.5,1,0.5,-1,-1,1,Evitar obstaculo y premio izquierda
+0.5,-1,0.5,1,1,1,Evitar obstaculo y premio derecha
+1,1,0,0,0,-1,Retroceder obstaculo muy cerca
+1,-1,0,0,0,-1,Retroceder obstaculo muy cerca
+1,0,0,0,0,-1,Retroceder obstaculo enfrente
+1,1,1,-1,0,-1,Retroceder prioridad obstaculo
+1,-1,1,1,0,-1,Retroceder prioridad obstaculo
+0,0.5,0,0,0,1,Avanzar
+0,0,0.5,0,0,1,Avanzar hacia premio
