@@ -70,7 +70,7 @@ class PerceptronMulticapa:
     
 def main():
     np.random.seed(21)
-    archivo = "data/compuerta_xor.csv"
+    archivo = "00.data/compuerta_xor.csv"
     dataset_entradas, salidas_esperadas = leer_dataset(archivo)
 
     modelo = PerceptronMulticapa(

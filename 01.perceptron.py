@@ -44,7 +44,7 @@ class Perceptron:
 
 def main():
     np.random.seed(21)
-    archivo = "data/compuerta_or.csv"
+    archivo = "00.data/compuerta_or.csv"
     dataset_entradas, salidas_esperadas = leer_dataset(archivo)
     
 
