@@ -1,19 +1,50 @@
 sensor_obstaculo,posicion_obstaculo,sensor_premio,posicion_premio,giro,direccion,accion
-0,0,0,0,0,1,Avanzar
-0,0,0.5,-1,-1,1,Girar izquierda buscar premio
-0,0,0.5,1,1,1,Girar derecha buscar premio
-0,0,1,0,0,1,Avanzar tomar premio
-0,0,1,-1,-1,1,Girar izquierda premio cercano
-0,0,1,1,1,1,Girar derecha premio cercano
-0.5,1,0,0,-1,1,Evitar obstaculo izquierda
-0.5,-1,0,0,1,1,Evitar obstaculo derecha
-0.5,0,0,0,0,1,Avanzar con precaucion
-0.5,1,0.5,-1,-1,1,Evitar obstaculo y premio izquierda
-0.5,-1,0.5,1,1,1,Evitar obstaculo y premio derecha
-1,1,0,0,0,-1,Retroceder obstaculo muy cerca
-1,-1,0,0,0,-1,Retroceder obstaculo muy cerca
-1,0,0,0,0,-1,Retroceder obstaculo enfrente
-1,1,1,-1,0,-1,Retroceder prioridad obstaculo
-1,-1,1,1,0,-1,Retroceder prioridad obstaculo
-0,0.5,0,0,0,1,Avanzar
-0,0,0.5,0,0,1,Avanzar hacia premio
+0.0,0.0,0.0,0.0,0,1,Avanzar
+0.0,0.0,0.5,-1.0,-1,1,Girar izquierda para buscar premio
+0.0,0.0,0.5,0.0,0,1,Avanzar hacia premio visible al frente
+0.0,0.0,0.5,1.0,1,1,Girar derecha para buscar premio
+0.0,0.0,1.0,-1.0,-1,1,Girar izquierda hacia premio muy cercano
+0.0,0.0,1.0,0.0,0,1,Avanzar para tomar premio
+0.0,0.0,1.0,1.0,1,1,Girar derecha hacia premio muy cercano
+0.5,-1.0,0.0,0.0,1,1,Girar derecha para evitar obstáculo cercano
+0.5,-1.0,0.5,-1.0,1,1,Girar derecha para evitar obstáculo cercano
+0.5,-1.0,0.5,0.0,1,1,Girar derecha para evitar obstáculo cercano
+0.5,-1.0,0.5,1.0,1,1,Girar derecha hacia premio y alejarse del obstáculo
+0.5,-1.0,1.0,-1.0,1,1,Girar derecha para evitar obstáculo cercano
+0.5,-1.0,1.0,0.0,1,1,Girar derecha para evitar obstáculo cercano
+0.5,-1.0,1.0,1.0,1,1,Girar derecha hacia premio y alejarse del obstáculo
+0.5,0.0,0.0,0.0,0,1,Avanzar con precaución
+0.5,0.0,0.5,-1.0,-1,1,Girar izquierda para rodear obstáculo y buscar premio
+0.5,0.0,0.5,0.0,0,1,Avanzar con precaución hacia premio al frente
+0.5,0.0,0.5,1.0,1,1,Girar derecha para rodear obstáculo y buscar premio
+0.5,0.0,1.0,-1.0,-1,1,Girar izquierda para rodear obstáculo y buscar premio
+0.5,0.0,1.0,0.0,0,1,Avanzar con precaución hacia premio al frente
+0.5,0.0,1.0,1.0,1,1,Girar derecha para rodear obstáculo y buscar premio
+0.5,1.0,0.0,0.0,-1,1,Girar izquierda para evitar obstáculo cercano
+0.5,1.0,0.5,-1.0,-1,1,Girar izquierda hacia premio y alejarse del obstáculo
+0.5,1.0,0.5,0.0,-1,1,Girar izquierda para evitar obstáculo cercano
+0.5,1.0,0.5,1.0,-1,1,Girar izquierda para evitar obstáculo cercano
+0.5,1.0,1.0,-1.0,-1,1,Girar izquierda hacia premio y alejarse del obstáculo
+0.5,1.0,1.0,0.0,-1,1,Girar izquierda para evitar obstáculo cercano
+0.5,1.0,1.0,1.0,-1,1,Girar izquierda para evitar obstáculo cercano
+1.0,-1.0,0.0,0.0,1,-1,Retroceder y girar a la derecha por obstáculo muy cercano
+1.0,-1.0,0.5,-1.0,1,-1,Retroceder y girar a la derecha por obstáculo muy cercano
+1.0,-1.0,0.5,0.0,1,-1,Retroceder y girar a la derecha por obstáculo muy cercano
+1.0,-1.0,0.5,1.0,1,-1,Retroceder y girar a la derecha por obstáculo muy cercano
+1.0,-1.0,1.0,-1.0,1,-1,Retroceder y girar a la derecha por obstáculo muy cercano
+1.0,-1.0,1.0,0.0,1,-1,Retroceder y girar a la derecha por obstáculo muy cercano
+1.0,-1.0,1.0,1.0,1,-1,Retroceder y girar a la derecha por obstáculo muy cercano
+1.0,0.0,0.0,0.0,0,-1,Retroceder por obstáculo muy cercano al frente
+1.0,0.0,0.5,-1.0,-1,-1,Retroceder y orientar hacia el premio para reintentar
+1.0,0.0,0.5,0.0,0,-1,Retroceder por obstáculo muy cercano al frente
+1.0,0.0,0.5,1.0,1,-1,Retroceder y orientar hacia el premio para reintentar
+1.0,0.0,1.0,-1.0,-1,-1,Retroceder y orientar hacia el premio para reintentar
+1.0,0.0,1.0,0.0,0,-1,Retroceder por obstáculo muy cercano al frente
+1.0,0.0,1.0,1.0,1,-1,Retroceder y orientar hacia el premio para reintentar
+1.0,1.0,0.0,0.0,-1,-1,Retroceder y girar a la izquierda por obstáculo muy cercano
+1.0,1.0,0.5,-1.0,-1,-1,Retroceder y girar a la izquierda por obstáculo muy cercano
+1.0,1.0,0.5,0.0,-1,-1,Retroceder y girar a la izquierda por obstáculo muy cercano
+1.0,1.0,0.5,1.0,-1,-1,Retroceder y girar a la izquierda por obstáculo muy cercano
+1.0,1.0,1.0,-1.0,-1,-1,Retroceder y girar a la izquierda por obstáculo muy cercano
+1.0,1.0,1.0,0.0,-1,-1,Retroceder y girar a la izquierda por obstáculo muy cercano
+1.0,1.0,1.0,1.0,-1,-1,Retroceder y girar a la izquierda por obstáculo muy cercano
